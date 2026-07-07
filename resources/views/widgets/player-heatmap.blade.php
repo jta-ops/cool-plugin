@@ -28,7 +28,7 @@
     $hasData = ($peakInfo['total_data_points'] ?? 0) > 0;
 @endphp
 
-<div class="cool-plugin-heatmap-widget" style="padding: 16px;">
+<div class="player-heatmap-ll-widget" style="padding: 16px;">
     {{-- Header with stats --}}
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
         <div style="display: flex; align-items: center; gap: 8px;">
@@ -129,7 +129,36 @@
         @endif
 
         <div style="margin-top: 8px; margin-left: 35px; color: #484f58; font-size: 9px;">
-            {{ config('cool-plugin.brand_footer') }}
+            {{ config('Player-Heatmap-LL.brand_footer') }}
         </div>
     </div>
 </div>
+
+<script>
+(() => {
+    const key = 'player-heatmap-ll-discord-dismissed';
+    if (localStorage.getItem(key)) return;
+
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(1,4,9,.72);z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px;';
+    overlay.innerHTML = `
+        <div style="max-width:420px;width:100%;background:#161b22;border:1px solid #30363d;border-radius:14px;padding:22px;box-shadow:0 18px 60px rgba(0,0,0,.45);color:#e6edf3;font-family:inherit;">
+            <div style="font-size:18px;font-weight:700;margin-bottom:8px;">Join Latitude Labs Discord</div>
+            <div style="color:#8b949e;font-size:13px;line-height:1.5;margin-bottom:16px;">Get plugin updates, support, and Minecraft hosting help from Latitude Labs.</div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button type="button" data-close style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:8px 12px;cursor:pointer;">Not now</button>
+                <a href="{{ config('Player-Heatmap-LL.discord_url') }}" target="_blank" rel="noopener" data-join style="background:#238636;color:#fff;text-decoration:none;border-radius:8px;padding:8px 12px;font-weight:600;">Join Discord</a>
+            </div>
+        </div>
+    `;
+
+    const close = () => {
+        localStorage.setItem(key, '1');
+        overlay.remove();
+    };
+
+    overlay.querySelector('[data-close]').addEventListener('click', close);
+    overlay.querySelector('[data-join]').addEventListener('click', close);
+    document.body.appendChild(overlay);
+})();
+</script>

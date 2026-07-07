@@ -21,7 +21,7 @@ class HeatmapPage extends Page
 
     protected static ?string $navigationLabel = 'Player Heatmap';
 
-    protected string $view = 'cool-plugin::pages.server-heatmap';
+    protected string $view = 'Player-Heatmap-LL::pages.server-heatmap';
 
     public static function canAccess(): bool
     {

@@ -1,9 +1,9 @@
 {
-    "id": "cool-plugin",
-    "name": "Latitude Labs Minecraft Activity Heatmap",
+    "id": "Player-Heatmap-LL",
+    "name": "Player-Heatmap-LL",
     "author": "Latitude Labs",
     "email": "pelicanplugins@latitudehost.uk",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Self-contained Minecraft activity heatmaps for Pelican. Parses real Minecraft join and leave logs, tracks player activity, and shows per-server analytics without external plugin dependencies.",
     "category": "plugin",
     "url": "https://latitudehost.uk",

@@ -10,7 +10,7 @@ use James\CoolPlugin\Models\PlayerHeatmapSample;
 
 class PlayerHeatmapWidget extends Widget
 {
-    protected string $view = 'cool-plugin::widgets.player-heatmap';
+    protected string $view = 'Player-Heatmap-LL::widgets.player-heatmap';
 
     protected static ?string $pollingInterval = '60s';
 
@@ -30,7 +30,7 @@ class PlayerHeatmapWidget extends Widget
 
     public function getHeading(): string
     {
-        return trans('cool-plugin::heatmap.heading');
+        return trans('Player-Heatmap-LL::heatmap.heading');
     }
 
     public function getHeatmapData(): array

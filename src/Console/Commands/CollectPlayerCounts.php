@@ -9,7 +9,7 @@ use James\CoolPlugin\Models\PlayerHeatmapSample;
 
 class CollectPlayerCounts extends Command
 {
-    protected $signature = 'cool-plugin:collect
+    protected $signature = 'player-heatmap-ll:collect
                             {server? : Specific server ID to collect for}
                             {--all : Collect for all servers including offline}';
 
@@ -63,7 +63,7 @@ class CollectPlayerCounts extends Command
                     $dayOfWeek,
                     $hour,
                     $playerCount,
-                    (float) config('cool-plugin.sample_alpha', 0.3)
+                    (float) config('Player-Heatmap-LL.sample_alpha', 0.3)
                 );
 
                 $collected++;

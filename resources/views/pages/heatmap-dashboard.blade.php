@@ -126,7 +126,7 @@
         @endif
 
         <div style="text-align: center; color: #484f58; font-size: 11px; margin-top: 18px;">
-            {{ config('cool-plugin.brand_footer') }}
+            {{ config('Player-Heatmap-LL.brand_footer') }}
         </div>
     </div>
 </x-filament-panels::page>

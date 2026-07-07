@@ -21,14 +21,14 @@ class CoolPluginPlugin implements HasPluginSettings, Plugin
 
     public function getId(): string
     {
-        return 'cool-plugin';
+        return 'Player-Heatmap-LL';
     }
 
     public function register(Panel $panel): void
     {
         // Register widgets on server panel console page
         if ($panel->getId() === 'server') {
-            $position = match (config('cool-plugin.widget_position', 'below_console')) {
+            $position = match (config('Player-Heatmap-LL.widget_position', 'below_console')) {
                 'top' => ConsoleWidgetPosition::Top,
                 'above_console' => ConsoleWidgetPosition::AboveConsole,
                 'below_console' => ConsoleWidgetPosition::BelowConsole,
@@ -64,17 +64,17 @@ class CoolPluginPlugin implements HasPluginSettings, Plugin
                     'below_console' => 'Below Console (default)',
                     'bottom' => 'Bottom',
                 ])
-                ->default(config('cool-plugin.widget_position', 'below_console'))
+                ->default(config('Player-Heatmap-LL.widget_position', 'below_console'))
                 ->native(false),
 
             Toggle::make('show_peak_indicator')
                 ->label('Show peak time indicator')
-                ->default(config('cool-plugin.show_peak_indicator', true))
+                ->default(config('Player-Heatmap-LL.show_peak_indicator', true))
                 ->inline(false),
 
             Toggle::make('show_stats_header')
                 ->label('Show peak/average stats in widget header')
-                ->default(config('cool-plugin.show_stats_header', true))
+                ->default(config('Player-Heatmap-LL.show_stats_header', true))
                 ->inline(false),
         ];
     }
@@ -82,9 +82,9 @@ class CoolPluginPlugin implements HasPluginSettings, Plugin
     public function saveSettings(array $data): void
     {
         $this->writeToEnvironment([
-            'COOL_PLUGIN_WIDGET_POSITION' => $data['widget_position'],
-            'COOL_PLUGIN_SHOW_PEAK_INDICATOR' => $data['show_peak_indicator'] ? 'true' : 'false',
-            'COOL_PLUGIN_SHOW_STATS_HEADER' => $data['show_stats_header'] ? 'true' : 'false',
+            'PLAYER_HEATMAP_LL_WIDGET_POSITION' => $data['widget_position'],
+            'PLAYER_HEATMAP_LL_SHOW_PEAK_INDICATOR' => $data['show_peak_indicator'] ? 'true' : 'false',
+            'PLAYER_HEATMAP_LL_SHOW_STATS_HEADER' => $data['show_stats_header'] ? 'true' : 'false',
         ]);
 
         Notification::make()

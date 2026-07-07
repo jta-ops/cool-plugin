@@ -1,8 +1,8 @@
-# Latitude Labs Minecraft Activity Heatmap
+# Player-Heatmap-LL
 
 Real Minecraft player activity analytics for Pelican.
 
-Latitude Labs Minecraft Activity Heatmap is a self-contained Pelican plugin that reads Minecraft server logs, records real join and leave events, and turns that activity into useful heatmaps and server summaries. It does not require any other plugin or external player counter.
+Player-Heatmap-LL is a self-contained Pelican plugin by Latitude Labs that reads Minecraft server logs, records real join and leave events, and turns that activity into useful heatmaps and server summaries. It does not require any other plugin or external player counter.
 
 Made by latitudehost.uk.
 
@@ -15,6 +15,7 @@ Made by latitudehost.uk.
 - Tracks joins, leaves, unique players, estimated online players, peak activity, and average activity.
 - Uses only real Minecraft log data. It does not show fake demo activity.
 - Skips non-Minecraft eggs automatically.
+- Shows a one-time Latitude Labs Discord popup on the console widget or heatmap page.
 
 ## Why This Exists
 
@@ -85,8 +86,8 @@ The plugin includes its own migrations, commands, views, config, and scheduler e
 The plugin registers two scheduled tasks:
 
 ```text
-cool-plugin:collect    every minute
-cool-plugin:scan-logs  every five minutes
+player-heatmap-ll:collect    every minute
+player-heatmap-ll:scan-logs  every five minutes
 ```
 
 `scan-logs` reads Minecraft logs and records join/leave events.
@@ -98,25 +99,25 @@ cool-plugin:scan-logs  every five minutes
 Scan all Minecraft servers:
 
 ```bash
-php artisan cool-plugin:scan-logs --all
+php artisan player-heatmap-ll:scan-logs --all
 ```
 
 Scan one server:
 
 ```bash
-php artisan cool-plugin:scan-logs SERVER_ID
+php artisan player-heatmap-ll:scan-logs SERVER_ID
 ```
 
 Collect current estimated counts:
 
 ```bash
-php artisan cool-plugin:collect --all
+php artisan player-heatmap-ll:collect --all
 ```
 
 Collect one server:
 
 ```bash
-php artisan cool-plugin:collect SERVER_ID
+php artisan player-heatmap-ll:collect SERVER_ID
 ```
 
 ## Configuration
@@ -124,7 +125,7 @@ php artisan cool-plugin:collect SERVER_ID
 Widget position:
 
 ```env
-COOL_PLUGIN_WIDGET_POSITION=below_console
+PLAYER_HEATMAP_LL_WIDGET_POSITION=below_console
 ```
 
 Supported values:
@@ -139,13 +140,19 @@ bottom
 Minecraft detection keywords:
 
 ```env
-COOL_PLUGIN_MINECRAFT_KEYWORDS=minecraft,paper,spigot,purpur,forge,fabric,vanilla,bukkit,neoforge
+PLAYER_HEATMAP_LL_MINECRAFT_KEYWORDS=minecraft,paper,spigot,purpur,forge,fabric,vanilla,bukkit,neoforge
+```
+
+Custom log paths, added in this version:
+
+```env
+PLAYER_HEATMAP_LL_LOG_PATHS=logs/latest.log,server.log,console.log,logs/debug.log
 ```
 
 Sample smoothing weight:
 
 ```env
-COOL_PLUGIN_SAMPLE_ALPHA=0.3
+PLAYER_HEATMAP_LL_SAMPLE_ALPHA=0.3
 ```
 
 Higher values react faster to new activity. Lower values smooth activity over time.
@@ -176,12 +183,16 @@ Check that:
 You can also run:
 
 ```bash
-php artisan cool-plugin:scan-logs --all
+php artisan player-heatmap-ll:scan-logs --all
 ```
 
 ### Server Says Minecraft Only
 
-The egg was not detected as Minecraft. Add a Minecraft keyword to the egg metadata or set custom keywords with `COOL_PLUGIN_MINECRAFT_KEYWORDS`.
+The egg was not detected as Minecraft. Add a Minecraft keyword to the egg metadata or set custom keywords with `PLAYER_HEATMAP_LL_MINECRAFT_KEYWORDS`.
+
+### Discord Popup Keeps Showing
+
+The Discord popup is dismissed per browser using `localStorage`. If it shows again, the browser storage was cleared or a different browser/device is being used.
 
 ### Joins Show But Online Count Looks Wrong
 
@@ -193,13 +204,15 @@ The plugin stores a persistent hash of processed log lines in the database. This
 
 ## Branding
 
-Plugin name: Latitude Labs Minecraft Activity Heatmap
+Plugin name: Player-Heatmap-LL
 
 Author: Latitude Labs
 
 Contact: pelicanplugins@latitudehost.uk
 
 Website: https://latitudehost.uk
+
+Discord: https://vltgg.net/discord
 
 Footer: Made by latitudehost.uk
 

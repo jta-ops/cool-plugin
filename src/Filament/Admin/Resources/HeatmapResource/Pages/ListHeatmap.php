@@ -12,7 +12,7 @@ class ListHeatmap extends ListRecords
 {
     protected static string $resource = HeatmapResource::class;
 
-    protected string $view = 'cool-plugin::pages.heatmap-dashboard';
+    protected string $view = 'Player-Heatmap-LL::pages.heatmap-dashboard';
 
     public function getHeading(): string
     {

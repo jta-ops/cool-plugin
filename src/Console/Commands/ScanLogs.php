@@ -10,7 +10,7 @@ use James\CoolPlugin\Models\PlayerHeatmapSample;
 
 class ScanLogs extends Command
 {
-    protected $signature = 'cool-plugin:scan-logs
+    protected $signature = 'player-heatmap-ll:scan-logs
                             {server? : Specific server ID}
                             {--all : Scan all servers including offline}';
 
@@ -59,7 +59,7 @@ class ScanLogs extends Command
         }
 
         // Also collect current counts estimated from this plugin's own parsed events.
-        $this->callSilent('cool-plugin:collect', ['--all' => true]);
+        $this->callSilent('player-heatmap-ll:collect', ['--all' => true]);
 
         // Cleanup old events (older than 30 days)
         $deleted = PlayerEvent::cleanup(30);
@@ -75,13 +75,12 @@ class ScanLogs extends Command
     {
         $fileRepo = (new DaemonFileRepository())->setServer($server);
 
-        // Try common log paths
-        $logPaths = [
-            'logs/latest.log',       // Minecraft
-            'server.log',            // Legacy Minecraft
-            'console.log',           // Generic
-            'logs/debug.log',        // Some Minecraft setups
-        ];
+        $logPaths = config('Player-Heatmap-LL.log_paths', [
+            'logs/latest.log',
+            'server.log',
+            'console.log',
+            'logs/debug.log',
+        ]);
 
         $logContent = null;
         $sourcePath = null;
@@ -192,7 +191,7 @@ class ScanLogs extends Command
             $eventTime->dayOfWeekIso - 1,
             $eventTime->hour,
             PlayerEvent::getEstimatedOnlineCount($server->id, $eventTime),
-            (float) config('cool-plugin.sample_alpha', 0.3)
+            (float) config('Player-Heatmap-LL.sample_alpha', 0.3)
         );
     }
 }

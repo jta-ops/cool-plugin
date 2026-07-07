@@ -12,8 +12,8 @@ class CoolPluginPluginProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            plugin_path('cool-plugin', 'config/cool-plugin.php'),
-            'cool-plugin'
+            plugin_path('Player-Heatmap-LL', 'config/cool-plugin.php'),
+            'Player-Heatmap-LL'
         );
     }
 
@@ -21,19 +21,19 @@ class CoolPluginPluginProvider extends ServiceProvider
     {
         // Load views
         $this->loadViewsFrom(
-            plugin_path('cool-plugin', 'resources/views'),
-            'cool-plugin'
+            plugin_path('Player-Heatmap-LL', 'resources/views'),
+            'Player-Heatmap-LL'
         );
 
         // Load translations
         $this->loadTranslationsFrom(
-            plugin_path('cool-plugin', 'lang'),
-            'cool-plugin'
+            plugin_path('Player-Heatmap-LL', 'lang'),
+            'Player-Heatmap-LL'
         );
 
         // Load migrations
         $this->loadMigrationsFrom(
-            plugin_path('cool-plugin', 'database/migrations')
+            plugin_path('Player-Heatmap-LL', 'database/migrations')
         );
 
         // Register console commands
@@ -45,9 +45,9 @@ class CoolPluginPluginProvider extends ServiceProvider
         }
 
         // Schedule: collect player counts every minute
-        Schedule::command('cool-plugin:collect')->everyMinute();
+        Schedule::command('player-heatmap-ll:collect')->everyMinute();
 
         // Schedule: scan logs every 5 minutes
-        Schedule::command('cool-plugin:scan-logs')->everyFiveMinutes();
+        Schedule::command('player-heatmap-ll:scan-logs')->everyFiveMinutes();
     }
 }
