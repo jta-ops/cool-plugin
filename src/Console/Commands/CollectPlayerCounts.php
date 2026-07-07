@@ -63,7 +63,7 @@ class CollectPlayerCounts extends Command
                     $dayOfWeek,
                     $hour,
                     $playerCount,
-                    (float) config('Player-Heatmap-LL.sample_alpha', 0.3)
+                    (float) config('player-heatmap-ll.sample_alpha', 0.3)
                 );
 
                 $collected++;

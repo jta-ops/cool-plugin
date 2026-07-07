@@ -129,7 +129,7 @@
         @endif
 
         <div style="margin-top: 8px; margin-left: 35px; color: #484f58; font-size: 9px;">
-            {{ config('Player-Heatmap-LL.brand_footer') }}
+            {{ config('player-heatmap-ll.brand_footer') }}
         </div>
     </div>
 </div>
@@ -147,7 +147,7 @@
             <div style="color:#8b949e;font-size:13px;line-height:1.5;margin-bottom:16px;">Get plugin updates, support, and Minecraft hosting help from Latitude Labs.</div>
             <div style="display:flex;gap:10px;justify-content:flex-end;">
                 <button type="button" data-close style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:8px 12px;cursor:pointer;">Not now</button>
-                <a href="{{ config('Player-Heatmap-LL.discord_url') }}" target="_blank" rel="noopener" data-join style="background:#238636;color:#fff;text-decoration:none;border-radius:8px;padding:8px 12px;font-weight:600;">Join Discord</a>
+                <a href="{{ config('player-heatmap-ll.discord_url') }}" target="_blank" rel="noopener" data-join style="background:#238636;color:#fff;text-decoration:none;border-radius:8px;padding:8px 12px;font-weight:600;">Join Discord</a>
             </div>
         </div>
     `;

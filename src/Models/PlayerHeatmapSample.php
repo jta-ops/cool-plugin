@@ -144,7 +144,7 @@ class PlayerHeatmapSample extends Model
             implode(' ', $server->egg?->tags ?? []),
         ])));
 
-        foreach (config('Player-Heatmap-LL.minecraft_keywords', []) as $keyword) {
+        foreach (config('player-heatmap-ll.minecraft_keywords', []) as $keyword) {
             if ($keyword !== '' && str_contains($haystack, strtolower($keyword))) {
                 return true;
             }

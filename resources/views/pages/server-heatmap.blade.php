@@ -14,6 +14,33 @@
 
     $hasData = ($peakInfo['total_data_points'] ?? 0) > 0;
     $summary = $serverStatus['summary'] ?? [];
+    $graph = $this->getGraphData();
+    $graphRanges = $this->getGraphRanges();
+    $graphPoints = $graph['points'] ?? [];
+    $graphMax = max($graph['max'] ?? 1, 1);
+    $graphWidth = 1000;
+    $graphHeight = 280;
+    $graphPadX = 44;
+    $graphPadTop = 18;
+    $graphPadBottom = 34;
+    $graphInnerWidth = $graphWidth - ($graphPadX * 2);
+    $graphInnerHeight = $graphHeight - $graphPadTop - $graphPadBottom;
+    $linePoints = [];
+    $areaPoints = [];
+    $pointMeta = [];
+    $pointCount = count($graphPoints);
+
+    foreach ($graphPoints as $index => $point) {
+        $x = $graphPadX + ($pointCount > 1 ? ($index / ($pointCount - 1)) * $graphInnerWidth : $graphInnerWidth / 2);
+        $y = $graphPadTop + ($graphInnerHeight - (($point['count'] ?? 0) / $graphMax) * $graphInnerHeight);
+        $linePoints[] = round($x, 2) . ',' . round($y, 2);
+        $areaPoints[] = round($x, 2) . ',' . round($y, 2);
+        $pointMeta[] = array_merge($point, ['x' => round($x, 2), 'y' => round($y, 2)]);
+    }
+
+    $areaPolygon = $pointCount > 0
+        ? implode(' ', array_merge(["{$graphPadX}," . ($graphHeight - $graphPadBottom)], $areaPoints, [($graphWidth - $graphPadX) . ',' . ($graphHeight - $graphPadBottom)]))
+        : '';
 
     function heatColor($value, $max) {
         if ($value <= 0) return '#161b22';
@@ -86,6 +113,82 @@
             <div style="color: #f85149; font-size: 20px; font-weight: 700;">{{ $summary['total_leaves'] ?? 0 }}</div>
             <div style="color: #8b949e; font-size: 11px;">leaves recorded</div>
         </div>
+    </div>
+
+    {{-- Optional Graph View --}}
+    <div style="background: #0d1117; border-radius: 14px; border: 1px solid #30363d; padding: 20px; margin-bottom: 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+            <div>
+                <h3 style="color: #e6edf3; font-size: 16px; font-weight: 600; margin: 0;">Graph View</h3>
+                <p style="color: #8b949e; font-size: 12px; margin: 4px 0 0 0;">Player count over time from existing Minecraft history events.</p>
+            </div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                @foreach($graphRanges as $rangeKey => $rangeLabel)
+                    <button
+                        type="button"
+                        wire:click="setGraphRange('{{ $rangeKey }}')"
+                        style="background: {{ $graph['range'] === $rangeKey ? '#f97316' : '#161b22' }}; color: {{ $graph['range'] === $rangeKey ? '#fff7ed' : '#c9d1d9' }}; border: 1px solid {{ $graph['range'] === $rangeKey ? '#fb923c' : '#30363d' }}; border-radius: 999px; padding: 7px 11px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .16s ease;"
+                    >{{ $rangeLabel }}</button>
+                @endforeach
+            </div>
+        </div>
+
+        @if(!($graph['has_data'] ?? false) || $pointCount === 0)
+            <div style="height: 260px; border-radius: 12px; border: 1px dashed #30363d; background: #090d13; display: flex; align-items: center; justify-content: center; color: #8b949e; font-size: 13px; text-align: center; padding: 24px;">
+                No player history available.
+            </div>
+        @else
+            <div class="player-history-graph" wire:key="player-history-graph-{{ $graph['range'] }}" style="position: relative; border-radius: 12px; background: linear-gradient(180deg, #0b0f14 0%, #090d13 100%); border: 1px solid #21262d; overflow: hidden; min-height: 260px;">
+                <svg class="player-history-svg" viewBox="0 0 {{ $graphWidth }} {{ $graphHeight }}" preserveAspectRatio="none" data-points='@json($pointMeta)' style="display: block; width: 100%; height: clamp(240px, 34vw, 340px); touch-action: none;">
+                    <defs>
+                        <linearGradient id="playerHistoryFill-{{ $graph['range'] }}" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#f97316" stop-opacity="0.24" />
+                            <stop offset="65%" stop-color="#ef4444" stop-opacity="0.08" />
+                            <stop offset="100%" stop-color="#ef4444" stop-opacity="0" />
+                        </linearGradient>
+                        <filter id="playerHistoryGlow-{{ $graph['range'] }}" x="-20%" y="-80%" width="140%" height="260%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feMerge>
+                                <feMergeNode in="blur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    @for($i = 0; $i <= 4; $i++)
+                        @php
+                            $gridY = $graphPadTop + ($i / 4) * $graphInnerHeight;
+                            $gridValue = round($graphMax - (($i / 4) * $graphMax));
+                        @endphp
+                        <line x1="{{ $graphPadX }}" y1="{{ $gridY }}" x2="{{ $graphWidth - $graphPadX }}" y2="{{ $gridY }}" stroke="#30363d" stroke-opacity="0.36" stroke-width="1" />
+                        <text x="12" y="{{ $gridY + 4 }}" fill="#6e7681" font-size="11">{{ $gridValue }}</text>
+                    @endfor
+
+                    @foreach([0, 0.25, 0.5, 0.75, 1] as $tick)
+                        @php
+                            $tickIndex = min($pointCount - 1, (int) round(($pointCount - 1) * $tick));
+                            $tickX = $graphPadX + ($pointCount > 1 ? ($tickIndex / ($pointCount - 1)) * $graphInnerWidth : $graphInnerWidth / 2);
+                            $tickLabel = $graphPoints[$tickIndex]['label'] ?? '';
+                        @endphp
+                        <text x="{{ $tickX }}" y="{{ $graphHeight - 10 }}" fill="#6e7681" font-size="11" text-anchor="middle">{{ $tickLabel }}</text>
+                    @endforeach
+
+                    <polygon points="{{ $areaPolygon }}" fill="url(#playerHistoryFill-{{ $graph['range'] }})" opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" dur="420ms" fill="freeze" />
+                    </polygon>
+                    <polyline points="{{ implode(' ', $linePoints) }}" fill="none" stroke="#f97316" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#playerHistoryGlow-{{ $graph['range'] }})" stroke-dasharray="1200" stroke-dashoffset="1200">
+                        <animate attributeName="stroke-dashoffset" from="1200" to="0" dur="620ms" fill="freeze" />
+                    </polyline>
+                    <line class="graph-guide" x1="0" y1="{{ $graphPadTop }}" x2="0" y2="{{ $graphHeight - $graphPadBottom }}" stroke="#f97316" stroke-opacity="0" stroke-width="1.4" stroke-dasharray="4 5" />
+                    <circle class="graph-dot" cx="0" cy="0" r="5" fill="#ffedd5" stroke="#f97316" stroke-width="2" opacity="0" />
+                </svg>
+                <div class="graph-tooltip" style="position: absolute; pointer-events: none; opacity: 0; transform: translate(-50%, -115%); background: rgba(13,17,23,.96); border: 1px solid #f97316; border-radius: 10px; padding: 9px 11px; box-shadow: 0 14px 34px rgba(0,0,0,.38); min-width: 150px; transition: opacity .12s ease;">
+                    <div data-count style="color: #fff7ed; font-size: 18px; font-weight: 800; line-height: 1;"></div>
+                    <div data-date style="color: #c9d1d9; font-size: 11px; margin-top: 6px;"></div>
+                    <div data-time style="color: #8b949e; font-size: 11px; margin-top: 2px;"></div>
+                </div>
+            </div>
+        @endif
     </div>
 
     {{-- Main Heatmap Grid --}}
@@ -208,7 +311,7 @@
     </div>
 
     <div style="text-align: center; color: #484f58; font-size: 11px; margin-top: 18px;">
-        {{ config('Player-Heatmap-LL.brand_footer') }}
+        {{ config('player-heatmap-ll.brand_footer') }}
     </div>
 </div>
 
@@ -242,6 +345,69 @@ function showDetail(cell) {
 </script>
 
 <script>
+function initPlayerHistoryGraphs() {
+    document.querySelectorAll('.player-history-graph').forEach((graph) => {
+        if (graph.dataset.ready === '1') return;
+        graph.dataset.ready = '1';
+
+        const svg = graph.querySelector('.player-history-svg');
+        const guide = graph.querySelector('.graph-guide');
+        const dot = graph.querySelector('.graph-dot');
+        const tooltip = graph.querySelector('.graph-tooltip');
+        const countEl = tooltip?.querySelector('[data-count]');
+        const dateEl = tooltip?.querySelector('[data-date]');
+        const timeEl = tooltip?.querySelector('[data-time]');
+        const points = JSON.parse(svg?.dataset.points || '[]');
+
+        if (!svg || !guide || !dot || !tooltip || points.length === 0) return;
+
+        const nearestPoint = (clientX) => {
+            const rect = svg.getBoundingClientRect();
+            const viewX = ((clientX - rect.left) / Math.max(rect.width, 1)) * {{ $graphWidth }};
+            return points.reduce((nearest, point) => Math.abs(point.x - viewX) < Math.abs(nearest.x - viewX) ? point : nearest, points[0]);
+        };
+
+        const showPoint = (point) => {
+            const rect = svg.getBoundingClientRect();
+            const scaleX = rect.width / {{ $graphWidth }};
+            const scaleY = rect.height / {{ $graphHeight }};
+            const left = point.x * scaleX;
+            const top = point.y * scaleY;
+
+            guide.setAttribute('x1', point.x);
+            guide.setAttribute('x2', point.x);
+            guide.style.strokeOpacity = '0.85';
+            dot.setAttribute('cx', point.x);
+            dot.setAttribute('cy', point.y);
+            dot.style.opacity = '1';
+
+            countEl.textContent = `${point.count} ${point.count === 1 ? 'player' : 'players'}`;
+            dateEl.textContent = point.date;
+            timeEl.textContent = point.time;
+            tooltip.style.left = `${left}px`;
+            tooltip.style.top = `${Math.max(52, top)}px`;
+            tooltip.style.opacity = '1';
+        };
+
+        const hidePoint = () => {
+            guide.style.strokeOpacity = '0';
+            dot.style.opacity = '0';
+            tooltip.style.opacity = '0';
+        };
+
+        svg.addEventListener('pointermove', (event) => showPoint(nearestPoint(event.clientX)));
+        svg.addEventListener('pointerleave', hidePoint);
+        svg.addEventListener('pointerdown', (event) => showPoint(nearestPoint(event.clientX)));
+    });
+}
+
+initPlayerHistoryGraphs();
+document.addEventListener('livewire:navigated', initPlayerHistoryGraphs);
+document.addEventListener('livewire:update', () => setTimeout(initPlayerHistoryGraphs, 0));
+document.addEventListener('livewire:updated', () => setTimeout(initPlayerHistoryGraphs, 0));
+</script>
+
+<script>
 (() => {
     const key = 'player-heatmap-ll-discord-dismissed';
     if (localStorage.getItem(key)) return;
@@ -254,7 +420,7 @@ function showDetail(cell) {
             <div style="color:#8b949e;font-size:13px;line-height:1.5;margin-bottom:16px;">Get plugin updates, support, and Minecraft hosting help from Latitude Labs.</div>
             <div style="display:flex;gap:10px;justify-content:flex-end;">
                 <button type="button" data-close style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:8px 12px;cursor:pointer;">Not now</button>
-                <a href="{{ config('Player-Heatmap-LL.discord_url') }}" target="_blank" rel="noopener" data-join style="background:#238636;color:#fff;text-decoration:none;border-radius:8px;padding:8px 12px;font-weight:600;">Join Discord</a>
+                <a href="{{ config('player-heatmap-ll.discord_url') }}" target="_blank" rel="noopener" data-join style="background:#238636;color:#fff;text-decoration:none;border-radius:8px;padding:8px 12px;font-weight:600;">Join Discord</a>
             </div>
         </div>
     `;

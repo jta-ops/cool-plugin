@@ -21,14 +21,14 @@ class CoolPluginPlugin implements HasPluginSettings, Plugin
 
     public function getId(): string
     {
-        return 'Player-Heatmap-LL';
+        return 'player-heatmap-ll';
     }
 
     public function register(Panel $panel): void
     {
         // Register widgets on server panel console page
         if ($panel->getId() === 'server') {
-            $position = match (config('Player-Heatmap-LL.widget_position', 'below_console')) {
+            $position = match (config('player-heatmap-ll.widget_position', 'below_console')) {
                 'top' => ConsoleWidgetPosition::Top,
                 'above_console' => ConsoleWidgetPosition::AboveConsole,
                 'below_console' => ConsoleWidgetPosition::BelowConsole,
@@ -64,17 +64,17 @@ class CoolPluginPlugin implements HasPluginSettings, Plugin
                     'below_console' => 'Below Console (default)',
                     'bottom' => 'Bottom',
                 ])
-                ->default(config('Player-Heatmap-LL.widget_position', 'below_console'))
+                ->default(config('player-heatmap-ll.widget_position', 'below_console'))
                 ->native(false),
 
             Toggle::make('show_peak_indicator')
                 ->label('Show peak time indicator')
-                ->default(config('Player-Heatmap-LL.show_peak_indicator', true))
+                ->default(config('player-heatmap-ll.show_peak_indicator', true))
                 ->inline(false),
 
             Toggle::make('show_stats_header')
                 ->label('Show peak/average stats in widget header')
-                ->default(config('Player-Heatmap-LL.show_stats_header', true))
+                ->default(config('player-heatmap-ll.show_stats_header', true))
                 ->inline(false),
         ];
     }

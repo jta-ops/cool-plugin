@@ -12,8 +12,8 @@ class CoolPluginPluginProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            plugin_path('Player-Heatmap-LL', 'config/cool-plugin.php'),
-            'Player-Heatmap-LL'
+            plugin_path('player-heatmap-ll', 'config/cool-plugin.php'),
+            'player-heatmap-ll'
         );
     }
 
@@ -21,19 +21,19 @@ class CoolPluginPluginProvider extends ServiceProvider
     {
         // Load views
         $this->loadViewsFrom(
-            plugin_path('Player-Heatmap-LL', 'resources/views'),
-            'Player-Heatmap-LL'
+            plugin_path('player-heatmap-ll', 'resources/views'),
+            'player-heatmap-ll'
         );
 
         // Load translations
         $this->loadTranslationsFrom(
-            plugin_path('Player-Heatmap-LL', 'lang'),
-            'Player-Heatmap-LL'
+            plugin_path('player-heatmap-ll', 'lang'),
+            'player-heatmap-ll'
         );
 
         // Load migrations
         $this->loadMigrationsFrom(
-            plugin_path('Player-Heatmap-LL', 'database/migrations')
+            plugin_path('player-heatmap-ll', 'database/migrations')
         );
 
         // Register console commands

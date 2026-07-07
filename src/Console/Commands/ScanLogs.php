@@ -75,7 +75,7 @@ class ScanLogs extends Command
     {
         $fileRepo = (new DaemonFileRepository())->setServer($server);
 
-        $logPaths = config('Player-Heatmap-LL.log_paths', [
+        $logPaths = config('player-heatmap-ll.log_paths', [
             'logs/latest.log',
             'server.log',
             'console.log',
@@ -191,7 +191,7 @@ class ScanLogs extends Command
             $eventTime->dayOfWeekIso - 1,
             $eventTime->hour,
             PlayerEvent::getEstimatedOnlineCount($server->id, $eventTime),
-            (float) config('Player-Heatmap-LL.sample_alpha', 0.3)
+            (float) config('player-heatmap-ll.sample_alpha', 0.3)
         );
     }
 }
