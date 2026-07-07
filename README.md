@@ -2,6 +2,8 @@
 
 Real Minecraft player activity analytics for Pelican.
 
+![Player-Heatmap-LL main promo](http://panel.vltgg.net:48327/player-heatmap-ll-main.svg)
+
 Player-Heatmap-LL is a self-contained Pelican plugin by Latitude Labs that reads Minecraft server logs, records real join and leave events, and turns that activity into useful heatmaps and server summaries. It does not require any other plugin or external player counter.
 
 Made by latitudehost.uk.
@@ -16,6 +18,18 @@ Made by latitudehost.uk.
 - Uses only real Minecraft log data. It does not show fake demo activity.
 - Skips non-Minecraft eggs automatically.
 - Shows a one-time Latitude Labs Discord popup on the console widget or heatmap page.
+
+## Visual Style
+
+Player-Heatmap-LL uses a dark gaming-style interface with yellow, amber, orange, and red accents.
+
+- Dark grey and black panels match Pelican's native dark theme.
+- Yellow and orange highlights make peaks and graph activity stand out.
+- Red-orange line graphs show activity trends without overpowering the UI.
+- Subtle amber gradients sit beneath graph lines for a polished analytics look.
+- Soft grey grid lines, rounded cards, and restrained glow effects keep the page clean.
+
+![Player-Heatmap-LL graph promo](http://panel.vltgg.net:48327/player-heatmap-ll-graph.svg)
 
 ## Why This Exists
 
