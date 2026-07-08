@@ -3,14 +3,17 @@
     "name": "Player-Heatmap-LL",
     "author": "Latitude Labs",
     "email": "pelicanplugins@latitudehost.uk",
-    "version": "1.3.0",
+    "version": "2.0.0",
     "description": "Self-contained Minecraft activity heatmaps for Pelican. Parses real Minecraft join and leave logs, tracks player activity, and shows per-server analytics without external plugin dependencies.",
     "category": "plugin",
     "url": "https://latitudehost.uk",
     "update_url": null,
     "namespace": "James\\CoolPlugin",
     "class": "CoolPluginPlugin",
-    "panels": ["admin", "server"],
-    "panel_version": "1.0.0-beta34",
+    "panels": [
+        "admin",
+        "server"
+    ],
+    "panel_version": "^1.0.0-beta34",
     "composer_packages": null
 }
